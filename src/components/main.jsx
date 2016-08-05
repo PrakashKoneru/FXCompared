@@ -11,7 +11,8 @@ module.exports= React.createClass({
     ],
     getInitialState: function(){
         return {
-            data:[]
+            data:[],
+            searchText: ""
         }
     },
     componentWillMount : function(){
@@ -20,6 +21,7 @@ module.exports= React.createClass({
     render : function() {
 
         return  <div>
+            <input type="text" placeholder="Search" onChange={this.filter}/>
             <table className=" table-striped table-bordered table-condensed hover" >
                 <thead>
                 <tr>
@@ -37,6 +39,11 @@ module.exports= React.createClass({
                 </tbody>
             </table>
         </div>
+    },
+    filter : function(event){
+        this.setState({
+            searchText:event.target.value
+        });
     },
     sortTable: function (column) {
         //if the values are numbers sort by increasing order, else sort alphabetically
@@ -58,12 +65,21 @@ module.exports= React.createClass({
         });
     },
     renderRow : function(){
-        var data=this.state.data;
+        var data=this.state.data,
+            searchText=this.state.searchText.toUpperCase(),
+            isRowFiltered=false;
         return data.map(function(row){
             var cells=  Object.keys(row).map(function(cell){
+                //check if this row matches the search text.
+                if(!isRowFiltered && row[cell].indexOf(searchText)>-1){
+                    isRowFiltered=true;
+                }
                 return <td>{row[cell]}</td>
             });
-            return <tr>{cells}</tr>
+            if(isRowFiltered){
+                isRowFiltered=false;
+                return <tr>{cells}</tr>
+            }
         })
     },
     onChange : function(event,data){
