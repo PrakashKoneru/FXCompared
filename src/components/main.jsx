@@ -23,13 +23,13 @@ module.exports= React.createClass({
             <table className=" table-striped table-bordered table-condensed hover" >
                 <thead>
                 <tr>
-                    <th>id</th>
-                    <th>Name</th>
-                    <th>Rate</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Ask</th>
-                    <th>Bid</th>
+                    <th onClick={this.sortTable.bind(this,"id")}>id</th>
+                    <th onClick={this.sortTable.bind(this,"Name")}>Name</th>
+                    <th onClick={this.sortTable.bind(this,"Rate")}>Rate</th>
+                    <th onClick={this.sortTable.bind(this,"Date")}>Date</th>
+                    <th onClick={this.sortTable.bind(this,"Time")}>Time</th>
+                    <th onClick={this.sortTable.bind(this,"Ask")}>Ask</th>
+                    <th onClick={this.sortTable.bind(this,"Bid")}>Bid</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,7 +38,25 @@ module.exports= React.createClass({
             </table>
         </div>
     },
-
+    sortTable: function (column) {
+        //if the values are numbers sort by increasing order, else sort alphabetically
+        this.state.data.sort(function(a,b){
+            if(!isNaN(a[column])){
+                return (a[column]-b[column]);
+            } else {
+                if(a[column]>b[column]){
+                    return 1;
+                }else if(a[column]<b[column]) {
+                    return -1;
+                } else if(a[column]==b[column]) {
+                    return 0;
+                }
+            }
+        });
+        this.setState({
+            data:this.state.data,
+        });
+    },
     renderRow : function(){
         var data=this.state.data;
         return data.map(function(row){
